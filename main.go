@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -49,19 +50,25 @@ func submitPairs(c *gin.Context) {
 		return
 	}
 
+	printInputs, _ := json.MarshalIndent(pairs.Pairs, "", "  ")
+	fmt.Printf("Inputs: %v\n", string(printInputs))
 	graph, inDegree := buildGraph(pairs.Pairs)
 	sorted, err := topologicalSort(graph, inDegree)
 
 	if err != nil {
-		mostOutgoing, leastIncoming := findCycleBreakers(graph, inDegree)
+		mostOutgoing, leastIncoming, mostOutCnt, minInCnt := findCycleBreakers(graph, inDegree)
 		c.JSON(http.StatusOK, gin.H{
-			"message": "Cycle detected. Break cycle by removing edge",
-			"from":    mostOutgoing,
-			"to":      leastIncoming,
+			"message":            "Cycle detected. Break cycle by removing edge",
+			"error":              err.Error(),
+			"most_outgoing":      mostOutgoing,
+			"least_incoming":     leastIncoming,
+			"most_outgoing_cnt":  mostOutCnt,
+			"least_incoming_cnt": minInCnt,
 		})
 		return
 	}
-
+	printed, _ := json.MarshalIndent(sorted, "", "  ")
+	fmt.Printf("Output: %v\n", string(printed))
 	c.JSON(http.StatusOK, gin.H{"sorted": sorted})
 }
 
@@ -70,11 +77,21 @@ func buildGraph(pairs []Pair) (map[string][]string, map[string]int) {
 	inDegree := make(map[string]int)
 
 	for _, pair := range pairs {
+		if _, exists := graph[pair.From]; !exists {
+			graph[pair.From] = []string{}
+		}
+		if _, exists := graph[pair.To]; !exists {
+			graph[pair.To] = []string{}
+		}
 		graph[pair.From] = append(graph[pair.From], pair.To)
-		inDegree[pair.To]++
+
 		if _, exists := inDegree[pair.From]; !exists {
 			inDegree[pair.From] = 0
 		}
+		if _, exists := inDegree[pair.To]; !exists {
+			inDegree[pair.To] = 0
+		}
+		inDegree[pair.To]++
 	}
 
 	return graph, inDegree
@@ -111,7 +128,7 @@ func topologicalSort(graph map[string][]string, inDegree map[string]int) ([]stri
 	return nil, fmt.Errorf("cycle detected")
 }
 
-func findCycleBreakers(graph map[string][]string, inDegree map[string]int) (string, string) {
+func findCycleBreakers(graph map[string][]string, inDegree map[string]int) (string, string, int, int) {
 	maxOutgoingNode := ""
 	maxOutgoingCount := 0
 	minIncomingNode := ""
@@ -131,5 +148,5 @@ func findCycleBreakers(graph map[string][]string, inDegree map[string]int) (stri
 		}
 	}
 
-	return maxOutgoingNode, minIncomingNode
+	return maxOutgoingNode, minIncomingNode, maxOutgoingCount, minIncomingCount
 }
