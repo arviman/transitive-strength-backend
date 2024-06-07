@@ -20,7 +20,7 @@
     {"from":"SOL","to":"ADA"},
     {"from":"SOL","to":"NEAR"},
 
-    {"from":"RUNE","to":"DOGE"},
-    {"from":"RUNE","to":"SOL"}
+    {"from":"DOGE","to":"RUNE"},
+    {"from":"SOL","to":"RUNE"}
   ]
 }
