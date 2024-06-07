@@ -1,0 +1,26 @@
+{
+  "pairs":[
+    {"from":"BTC","to":"USD"},
+    {"from":"SOL","to":"USD"},
+
+    {"from":"SOL","to":"BTC"},
+    {"from":"BTC","to":"ADA"},
+    {"from":"BTC","to":"NEAR"},
+
+    {"from":"SOL","to":"LINK"},
+    {"from":"LINK","to":"DOGE"},
+    {"from":"ADA","to":"LINK"},
+
+    {"from":"ADA","to":"NEAR"},
+
+    {"from":"SOL","to":"DOGE"},
+    {"from":"ADA","to":"DOGE"},
+
+
+    {"from":"SOL","to":"ADA"},
+    {"from":"SOL","to":"NEAR"},
+
+    {"from":"RUNE","to":"DOGE"},
+    {"from":"RUNE","to":"SOL"}
+  ]
+}
