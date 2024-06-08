@@ -2,6 +2,7 @@
   "pairs":[
     {"from":"BTC","to":"USD"},
     {"from":"SOL","to":"USD"},
+    {"from":"NEAR","to":"USD"},
 
     {"from":"SOL","to":"BTC"},
     {"from":"BTC","to":"ADA"},
